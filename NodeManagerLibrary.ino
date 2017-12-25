@@ -2790,10 +2790,10 @@ int SensorMQ::_MQGetPercentage(float rs_ro_ratio, float *pcurve) {
 */
 #if MODULE_MHZ19 == 1
 // contructor
-SensorMHZ19::SensorMHZ19(const NodeManager& node_manager, int pin): Sensor(node_manager, pin) {
+SensorMHZ19::SensorMHZ19(const NodeManager& node_manager, int rxpin, int txpin): Sensor(node_manager, rxpin) {
   _name = "MHZ19";
-  _rx_pin = pin;
-  _tx_pin = pin+1;
+  _rx_pin = rxpin;
+  _tx_pin = txpin;
 }
 
 // what to do during before

@@ -1146,7 +1146,7 @@ class SensorMQ: public Sensor {
 #if MODULE_MHZ19 == 1
 class SensorMHZ19: public Sensor {
   public:
-    SensorMHZ19(const NodeManager& node_manager, int pin);
+    SensorMHZ19(const NodeManager& node_manager, int rxpin, int txpin);
     // define what to do at each stage of the sketch
     void onBefore();
     void onSetup();
