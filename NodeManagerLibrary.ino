@@ -3342,6 +3342,90 @@ void SensorWaterMeter::_reportTotal(Child* child) {
 }
 #endif
 
+/*
+   SensorPlantowerPMS
+*/
+#if MODULE_PMS == 1
+// contructor
+SensorPlantowerPMS::SensorPlantowerPMS(NodeManager& node_manager, int rxpin, int txpin): Sensor(node_manager, rxpin) {
+  _name = "PMS";
+  _rx_pin = rxpin;
+  _tx_pin = txpin;
+}
+
+// what to do during before
+void SensorPlantowerPMS::onBefore() {
+  // register the child
+  new ChildInt(this, _node->getAvailableChildId(), S_AIR_QUALITY, V_LEVEL, "PM1.0");
+  new ChildInt(this, _node->getAvailableChildId(), S_AIR_QUALITY, V_LEVEL, "PM2.5");
+  new ChildInt(this, _node->getAvailableChildId(), S_AIR_QUALITY, V_LEVEL, "PM10.0");
+}
+
+// what to do during setup
+void SensorPlantowerPMS::onSetup() {
+  _ser = new SoftwareSerial(_rx_pin, _tx_pin);
+  _pms = new PMS(*_ser);
+  _ser->begin(9600);
+}
+
+// Clean _valuesRead flag at the beginning so the onLoop function knows when to read values (should be done only once for all children)
+void SensorPlantowerPMS::loop(MyMessage* message) {
+  _valuesRead = false;
+  _valuesReadError = false;
+  Sensor::loop(message);
+}
+
+// what to do during loop
+void SensorPlantowerPMS::onLoop(Child* child) {
+  // Read the ppm values
+  if (!_valuesRead || _valuesReadError) {
+    _valuesReadError = !_pms->read(_data, 1000);
+    if (_valuesReadError) {
+      Serial.println(F("ERR PMS read"));
+      return;
+    }
+    _valuesRead = true;
+  }
+  int val = 0;
+  if (child == children.get(1)) {
+    // PM1.0 values
+    val = _data.PM_AE_UG_1_0;
+  } else if (child == children.get(2)) {
+    // PM 2.5 values
+    val = _data.PM_AE_UG_2_5;
+  } else if (child == children.get(3)) {
+    // PM 10.0 values
+    val = _data.PM_AE_UG_10_0;
+  } else {
+    Serial.println(F("ERR child"));
+    return;
+  }
+  ((ChildInt*)child)->setValueInt(val);
+  #if DEBUG == 1
+    Serial.print(_name);
+    Serial.print(F(" I="));
+    Serial.print(child->child_id);
+    Serial.print(F(" µg/m³="));
+    Serial.println(val);
+  #endif
+  // store the value
+}
+
+
+// what to do as the main task when receiving a message
+void SensorPlantowerPMS::onReceive(MyMessage* message) {
+  Child* child = getChild(message->sensor);
+  if (child == nullptr) return;
+  if (message->getCommand() == C_REQ && message->type == child->type) onLoop(child);
+}
+
+// what to do when receiving an interrupt
+void SensorPlantowerPMS::onInterrupt() {
+}
+
+#endif
+
+
 /*******************************************
    NodeManager
 */
