@@ -149,6 +149,10 @@
 #if MODULE_DIMMER == 1
   #include <math.h>
 #endif
+#if MODULE_PMS == 1
+  #include <PMS.h>
+  #include <SoftwareSerial.h> 
+#endif
 
 /*******************************************************************
    Classes
@@ -1342,6 +1346,34 @@ class SensorWaterMeter: public SensorPulseMeter {
     void _reportTotal(Child* child);
 };
 #endif
+
+/*
+   SensorPlantowerPMS
+*/
+#if MODULE_PMS == 1
+class SensorPlantowerPMS: public Sensor {
+  public:
+    SensorPlantowerPMS(NodeManager& node_manager, int rxpin, int txpin);
+    // define what to do at each stage of the sketch
+    void onBefore();
+    void onSetup();
+    void loop(MyMessage* message);
+    void onLoop(Child* child);
+    void onReceive(MyMessage* message);
+    void onInterrupt();
+  protected:
+    int _readSensorValues();
+    SoftwareSerial* _ser;
+    int _tx_pin = 4;
+    int _rx_pin = 3;
+    PMS *_pms;
+    PMS::DATA _data;
+
+    bool _valuesRead = false;
+    bool _valuesReadError = false;
+};
+#endif
+
 
 /***************************************
    NodeManager: manages all the aspects of the node

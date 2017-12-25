@@ -64,6 +64,7 @@ SensorDimmer | Generic dimmer sensor used to drive a pwm output
 SensorRainGauge | Rain gauge sensor
 SensorPowerMeter | Power meter pulse sensor
 SensorWaterMeter | Water meter pulse sensor
+SensorPlantowerPMS | Plantower PMS particulate matter sensors (reporting PM<=1.0, PM<=2.5 and PM<=10.0 in µg/m³): PMS3003, PMS5003, PMS7003 and PMSA003
 
 ## Installation
 
@@ -92,6 +93,7 @@ SensorMCP9808 | https://github.com/adafruit/Adafruit_MCP9808_Library
 SensorAM2320 | https://github.com/thakshak/AM2320
 SensorTSL2561 | https://github.com/adafruit/TSL2561-Arduino-Library
 SensorBMP280 | https://github.com/adafruit/Adafruit_BMP280_Library
+SensorPlantowerPMS | https://github.com/fu-hsi/pms
 
 ### Upgrade
 

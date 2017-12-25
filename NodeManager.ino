@@ -183,6 +183,8 @@
 #define MODULE_DIMMER 0
 // Enable this module to use one of the following sensors: SensorRainGauge, SensorPowerMeter, SensorWaterMeter
 #define MODULE_PULSE_METER 0
+// Enable this module to use one of the following sensors: SensorPlantowerPMS
+#define MODULE_PMS 0
 
 /***********************************
  * Load NodeManager Library
@@ -236,6 +238,7 @@ NodeManager node;
 //SensorRainGauge rainGauge(node,3);
 //SensorPowerMeter powerMeter(node,3);
 //SensorWaterMeter waterMeter(node,3);
+//SensorPlantowerPMS pms(node, 3, 4);
 
 /***********************************
  * Main Sketch
